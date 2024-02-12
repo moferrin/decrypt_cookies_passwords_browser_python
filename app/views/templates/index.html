@@ -1,46 +1,337 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Rashell Garces {% endblock %}</h1>
+<h1>{% block title %} Grupo # ?? {% endblock %}</h1>
 
-    <div class="mt-3">
-      <form>
-          <!-- Otros campos del formulario -->
-          <button type="submit" class="btn btn-primary">Enviar</button>
-      </form>
+<div class="container">
+  <form>
+    <!-- Otros campos del formulario -->
+    <button type="submit" class="btn btn-primary">Cargar Datos</button>
+  </form>
+</div>
+
+<div class="container">
+  <canvas id="grafica" style="max-width: 800px;">
+    Tu navegador no admite el elemento &lt;canvas&gt;.
+  </canvas>
+</div>
+
+
+<!-- INFORMACIÓN TÉCNICA -->
+<div class="row m-auto">
+  <div class="col-12 p-2">
+    <div class="card">
+      <div class="row px-3 p-2">
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo páginas Chrome:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_pag_chrome" name='cont_pag_chrome' disabled>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo páginas EDGE:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_pag_edge" name='cont_pag_edge' disabled>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo contraseñas Chrome:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_contr_chrome" name='cont_contr_chrome'  disabled>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo contraseñas Edge:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_contr_edge" name='cont_contr_edge'  disabled>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo cookies Chrome:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_cook_chrome" name='cont_cook_chrome'  disabled>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 p-2">
+          <label class="control-label"><b>Conteo cookies EDGE:</b>
+          </label>
+          <div class="fields">
+            <input type='text' class="form-control" id="cont_cook_edge" name='cont_cook_edge' disabled>
+          </div>
+        </div>
+
+        <br>
+        <label class="control-label"><b>Contraseñas Chrome:</b>
+        </label>
+        <div class="col-12 col-lg-12 col-xl-12 col-xxl-12 p-2 tableFixHead">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Dominio</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Creación</th>
+              </tr>
+            </thead>
+            <tbody id="contraChrome">
+
+            </tbody>
+          </table>
+        </div>
+
+        <br>
+
+        <label class="control-label"><b>Contraseñas EDGE:</b>
+        </label>
+        <div class="col-12 col-lg-12 col-xl-12 col-xxl-12 p-2 tableFixHead">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Dominio</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Creación</th>
+              </tr>
+            </thead>
+            <tbody id="contraEdge">
+
+            </tbody>
+          </table>
+        </div>
+
+        <br>
+
+        <label class="control-label"><b>Cookies Chrome:</b>
+        </label>
+        <div class="col-12 col-lg-12 col-xl-12 col-xxl-12 p-2 tableFixHead">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Dominio</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Creación/Caducidad</th>
+              </tr>
+            </thead>
+            <tbody id="cookiesChrome">
+
+            </tbody>
+          </table>
+        </div>
+
+        <br>
+
+        <label class="control-label"><b>Cookies EDGE:</b>
+        </label>
+        <div class="col-12 col-lg-12 col-xl-12 col-xxl-12 p-2 tableFixHead">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Dominio</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Creación/Caducidad</th>
+              </tr>
+            </thead>
+              <tbody id="cookiesEdge">
+
+              </tbody>
+          </table>
+        </div>
+
+      </div>
     </div>
 
-    <textarea name="respuesta" id="respuesta" cols="100" rows="10"></textarea>
-    <br>
-    <textarea name="respuesta_cook" id="respuesta_cook" cols="100" rows="10"></textarea>
-  
-    
-      <script>
-        $(document).ready(function() {
-          $('form').submit(function(event) {
-              event.preventDefault();
-              $.ajax({
-                type: 'POST',
-                url: '/obtener_contrasenias',
-                data: $('form').serialize(),
-                success: function(ret) {
-                  ret = JSON.stringify(ret,null,2)
-                  $("#respuesta").val(ret)
-                }
-              });
+  </div>
+</div>
 
-              $.ajax({
-                type: 'POST',
-                url: '/obtener_cookies',
-                data: $('form').serialize(),
-                success: function(ret) {
-                  ret = JSON.stringify(ret,null,2)
-                  $("#respuesta_cook").val(ret)
-                }
-              });
+<script>
+  $(document).ready(function () {
+    $('form').submit(function (event) {
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: '/obtener_contrasenias',
+        data: $('form').serialize(),
+        success: function (ret) {
+          ret = JSON.stringify(ret, null, 2)
+
+          chrome = JSON.parse(ret).chrome
+          totalC =  chrome.length
+          edge = JSON.parse(ret).edge
+          totalE = edge.length
+
+          $("#contraChrome").html("");
+          for (var i = 0; i < totalC; i++) {
+            var tr = `<tr class="table-active">
+                      <td>`+ chrome[i].origin_url + `</td>
+                      <td>`+ chrome[i].username + `</td>
+                      <td>`+ chrome[i].password + `</td>
+                      <td>`+ chrome[i].fecha_creacion + `</td>
+                      </tr>`;
+            $("#contraChrome").append(tr)
+          }
+
+          $("#cont_contr_chrome").val(totalC)
+          if(totalC == 0){
+            $("#cont_contr_chrome").css("background", "green")
+          } else if (totalC < 10){
+            $("#cont_contr_chrome").css("background", "yellow")
+          } else {
+            $("#cont_contr_chrome").css("background", "red")
+          }
+
+          $("#contraEdge").html("");
+          for (var i = 0; i < totalE; i++) {
+            var tr = `<tr class="table-active">
+                      <td>`+ edge[i].origin_url + `</td>
+                      <td>`+ edge[i].username + `</td>
+                      <td>`+ edge[i].password + `</td>
+                      <td>`+ edge[i].fecha_creacion + `</td>
+                      </tr>`;
+            $("#contraEdge").append(tr)
+          }
+
+          $("#cont_contr_edge").val(totalE)
+          if(totalE == 0){
+            $("#cont_contr_edge").css("background", "green")
+          } else if (totalC < 10){
+            $("#cont_contr_edge").css("background", "yellow")
+          } else {
+            $("#cont_contr_edge").css("background", "red")
+          }
+
+
+          $("#respuesta").val(ret)
+        }
+      });
+
+      $.ajax({
+        type: 'POST',
+        url: '/obtener_cookies',
+        data: $('form').serialize(),
+        success: function (ret) {
+          ret = JSON.stringify(ret, null, 2)
+
+          chrome = JSON.parse(ret).chrome
+          edge = JSON.parse(ret).edge
+
+          urlUnicosChrome = new Set();
+          chrome.forEach(cookie => {
+            urlUnicosChrome.add(cookie.dominio);
           });
-        });
-      </script>
-      
-    
+          contUrlUnicosChrome = urlUnicosChrome.size;
+          $("#cont_pag_chrome").val(contUrlUnicosChrome)
+
+
+          urlUnicosEdge = new Set();
+          edge.forEach(cookie => {
+            urlUnicosEdge.add(cookie.dominio);
+          });
+          contUrlUnicosEdge = urlUnicosEdge.size;
+          $("#cont_pag_edge").val(contUrlUnicosEdge)
+
+
+          $("#cookiesChrome").html("");
+          for (var i = 0; i < chrome.length; i++) {
+            var tr = `<tr class="table-active">
+                      <td>`+ chrome[i].dominio + `</td>
+                      <td>`+ chrome[i].nombre_cookie + `</td>
+                      <td style="word-break:break-all;">`+ chrome[i].valor + `</td>
+                      <td>`+ chrome[i].fecha_creacion +  ` / ` + chrome[i].expira + `</td>
+                      </tr>`;
+            $("#cookiesChrome").append(tr)
+          }
+
+          $("#cont_cook_chrome").val(chrome.length)
+
+          $("#cookiesEdge").html("");
+          for (var i = 0; i < edge.length; i++) {
+            var tr = `<tr class="table-active">
+                      <td>`+ edge[i].dominio + `</td>
+                      <td>`+ edge[i].nombre_cookie + `</td>
+                      <td style="word-break:break-all;">`+ edge[i].valor + `</td>
+                      <td>`+ edge[i].fecha_creacion +  ` / ` + edge[i].expira + `</td>
+                      </tr>`;
+            $("#cookiesEdge").append(tr)
+          }
+
+          $("#cont_cook_edge").val(edge.length)
+
+
+          //CONTENO 10 MAS REPETIDAS
+          let frecuenciaUrls = {};
+          
+          cookies = [].concat(chrome, edge)
+
+          if(cookies.length > 0){
+            Swal.fire("Cookies encontradas!");
+          }
+
+          cookies.forEach(cookie => {
+              frecuenciaUrls[cookie.dominio] = (frecuenciaUrls[cookie.dominio] || 0) + 1;
+          });
+          listaFrecuenciaUrls = Object.entries(frecuenciaUrls);
+
+          listaFrecuenciaUrls.sort((a, b) => b[1] - a[1]);
+
+          urlsMasRepetidos = listaFrecuenciaUrls.slice(0, 10);
+
+          console.log(urlsMasRepetidos)
+
+          grafica = document.getElementById('grafica')
+
+          etiquetas = []
+          data = []
+          urlsMasRepetidos.forEach(dato => {
+            etiquetas.push(dato[0])
+            data.push(dato[1])
+          })
+
+          datos = {
+            label: "Cantidad",
+            data:data,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo
+            borderColor: 'rgba(54, 162, 235, 1)', // Color del borde
+            borderWidth: 1,// Ancho del borde
+          }
+
+          new Chart(grafica, {
+              type: 'bar',// Tipo de gráfica
+              data: {
+                  labels: etiquetas,
+                  datasets: [
+                      datos,
+                  ]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }],
+                  },
+              }
+          });
+
+
+        }
+      });
+    });
+  });
+</script>
+
+
 {% endblock %}

